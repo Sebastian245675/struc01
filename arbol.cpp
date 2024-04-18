@@ -1,69 +1,206 @@
+}
+/*
+Realizar un sistema que permita el registro de estudiantes con el uso de árboles binarios, el sistema debe permitir realizar la indexación (orden de inserción) a través del código del estudiante (cada estudiante ya tiene un código asignado por tanto se le debe preguntar) y también por la fecha de nacimiento.
+El sistema debe permitir recorrer la solución planteada con el uso de los métodos de Inorden, Preorden y Postorden.
+Puede darse el caso de que dos estudiantes proporcionen la misma fecha de nacimiento en cuyo caso deberá ubicarse al nuevo nodo a la derecha de su igual
+El sistema debe permitir eliminar el registro del estudiante.
+Del alumno se deben solicitar: código, nombres, apellidos y fecha de nacimiento (año, mes y día)
+*/
 #include <iostream>
-#inlude <string>
 using namespace std;
-struct estudiante{
-
-string nombre;
-int coddigo;
-string fecha;
-estudiante* derecha;
-estudiante* izquierda;
+#include <malloc.h>
 
 
-    estudiante( string nombre,int codigo,string fecha,){
+struct DatosEst
+{
 
-        izquierda=NULL;
-        derecha=NULL;
-    }
+//indentificacion intrinsica del individuo.
+char nombre [20];
+char apellido[20];
+int codigo;
+
+//fecha de nacimiento
+int ano;
+int mes;
+int dia;
+
+//variable para identificar si una fecha es mayor o menor que otra.
+int cont;
+
+//Apuntadores
+DatosEst *izq, *der;
 };
-void registrarnodo(){
+
+DatosEst *raiz, *aux, *aux2;
+
+//Registar arbol.
+//case 1
+void registrar (){
+    aux=(struct DatosEst *) malloc (sizeof(struct DatosEst));
+
+    cout<<"\t Bienvenido querido usuario"<<endl;
+    cout<<"Este software cumple con todas las especificaciones dadas"<<endl;
+    cout<<"\t Disfrutalo"<<endl;
+    cout<<"    "<<endl;
+    cout<<"    "<<endl;
+
+    cout<<"Ingrese su nombre"<<endl;
+    cout<<"Nombre: ";
+    cin>>aux->nombre;
+
+    cout<<"Ingrese su apellido"<<endl;
+    cout<<"Apellido: ";
+    cin>>aux->apellido;
+
+    cout<<" \t¡DATO IMPORTANTE! "<<endl;
+    cout<<"\tLa fecha debe estar en formato AÑO-MES-DIA   "<<endl;
+    cout<<"\tEjemplo -> 2024-05-12 "<<endl;
+    cout<<"\tSe debe indexar la fecha tal cual la muestra el ejemplo "<<endl;
+    cout<<"\tEjemplo -> 2024-05-12 "<<endl;
+    cout<<"Ingrese la fecha"<<endl;
+    cout<<"Fecha: ";
+    cin>>aux->ano,cout<<" - ", aux->mes,cout<<" - ", aux->dia,cout<<""<<endl;
 
 
-  if(nodo=NULL){
-  estudiante nuevoestudiante= new estudiante(nombre,fecha,codigo);}
-else{
-if(codigo<nodo->codigo){
+    cout<<"Ingrese el codigo"<<endl;
+    cout<<"codigo"<<endl;
+    cin>>aux->codigo;
 
-insertarnodo(nodo->izquierda,nombre,fecha,codigo )
-
-
+    aux->izq=aux->der=NULL;
+if (raiz==NULL)
+{
+    aux=raiz;
+    aux=NULL;
+    free(aux);
+}else if (raiz!= NULL)
+{
+    /* code */
 
 }
-
-
-
-}
 }
 
-void mostrarpreorden(nodo* estudiante){
-
-
-    if(estudiante!=NULL){
-
-cout<<"codigo"<<nodo->codigo<<"nombre"<<nodo->nombre<<"codigo"<<nodo->codigo;
-preorden(nodo->izquierda)
-preorden(nodo->derecha)
-
+//Funciones para el arbol que esta organizado por codigo.
+//case 2
+int mostrarPreOr_Codigo (DatosEst* nodo){
+  if(nodo!=NULL){
+    
+    cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
+        mostrarPreOr_Codigo(nodo->izq);
+        mostrarPreOr_Codigo(nodo->der);
+    
+    
     }
+    return 0;
+}
+//case 3
+int mostrarPostOr_Codigo(DatosEstr* nodo){
+  if (nodo != NULL) {
+        mostrarPostOr_Codigo(nodo->izq);
+        mostrarPostOr_Codigo(nodo->der);
+        cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
+    
+   
 }
 
+    return 0;
+}
+//case 4
+int mostrarInOr_Codigo(){
+    return 0;
+}
 
-void imprimir postorden(estudiante* nodo){
+//Funciones para el arbol que esta organizado por fecha.
+//case 5
+int mostrarPreOr_Fecha (){
+    return 0;
+}
+//case 6
+int mostrarPostOr_Fecha(){
+    return 0;
+}
+//case 7
+int mostrarInOr_Fecha(){
+    return 0;
+}
 
+//Buscar estudiante por el codigo o por la fecha.
+//case 8 y case 9.
+int buscar (int codigo, int cont){
+    return 0;
+}
 
+//Eliminar estudiante por el codigo.
+//case 10.
+int eliminar(){
+    buscar();
+    return 0;
+}
+//case 11
+int salir(){
+    cout<<"\tQuerido usuario."<<endl;
+    cout<<"Muchas gracias por usar los servicios de nuestro software."<<endl;
+    cout<<"\tHasta luego."<<endl;
+    return 0;
+}
+ int defaul(){
+    cout<<"\tQuerido usuario."<<endl;
+    cout<<"La opcion digitada no pertence a ninguna funcion de los servicios de nuestro software."<<endl;
+    cout<<"\tIntenta de nuevo."<<endl;
+    
 
-    if(nodo!=NULL){
+    return 0;
+}
 
-postorden(nodo->izquierda)
-postorden(nodo->derecha)
+ 
 
-cout<<"codigo"<<nodo->codigo<<"nombre"<<nodo->nombre<<"codigo"<<nodo->codigo;
+int main(){
+    int opc;
+    do
+    {
+        
+    cout<<" \t MENU"<<endl;
+    cout<<" 1. Resgistrar Estudiante \n 2. mostrar en Pre-Orden el Org_Codigo \n 3. Mostrar en Post-Orden el Org_Codigo"<<endl;
+    cout<<" 4. Mostrar en  In-Orden el Org_Codigo \n 5. Mostrar en Pre-Orden el Org_Fecha \n 6. Mostrar en Pos-Orden el Org_fecha"<<endl;
+    cout<<" 7. Mostrar en In-Orden el Org_fecha \n 8. Buscar por Codigo \n 9. Buscar por fecha \n 10. Eliminar \n 11. salir"<<endl;
+    cout<<"    "<<endl;
+    cout<<"Digite la opcion que desea: ";
+    cin>>opc;
 
+    switch (opc)
+    {
+    case 1:registrar();
+        break;
+    case 2:mostrarPreOr_Codigo();
+        break;
+    case 3:mostrarPostOr_Codigo();
+        break;
+    case 4:mostrarInOr_Codigo();
+        break;
+    case 5:mostrarPreOr_Fecha();
+        break;
+    case 6:mostrarPostOr_Fecha();
+        break;
+    case 7:mostrarInOr_Fecha();
+        break;
+    case 8:buscar(int codigo);
+        break;
+    case 9:buscar(int cont);
+        break;
+    case 10:eliminar();
+        break;
+    case 11: salir();
+        break;
+    
+    default:defaul();
+        break;
     }
+        
+    } while (opc!=11);
+
+
+   
+    
+    
+
 
 }
-void liberarbol(estudiante*& nodo){
-liberararbol(nodo->izquierda)
-liberararbol(nodo->derecha)
-delete nodo;
-nodo=NULL;}
