@@ -1,206 +1,317 @@
-}
-/*
-Realizar un sistema que permita el registro de estudiantes con el uso de árboles binarios, el sistema debe permitir realizar la indexación (orden de inserción) a través del código del estudiante (cada estudiante ya tiene un código asignado por tanto se le debe preguntar) y también por la fecha de nacimiento.
-El sistema debe permitir recorrer la solución planteada con el uso de los métodos de Inorden, Preorden y Postorden.
-Puede darse el caso de que dos estudiantes proporcionen la misma fecha de nacimiento en cuyo caso deberá ubicarse al nuevo nodo a la derecha de su igual
-El sistema debe permitir eliminar el registro del estudiante.
-Del alumno se deben solicitar: código, nombres, apellidos y fecha de nacimiento (año, mes y día)
-*/
+//Daniel Steve Montaño A.
+//Sebastian Salazar.
 #include <iostream>
-using namespace std;
 #include <malloc.h>
+using namespace std;
 
+struct DatosEst {
+    // Identificación intrínseca del individuo.
+    char nombre[20];
+    char apellido[20];
+    int codigo;
 
-struct DatosEst
-{
+    // Fecha de nacimiento
+    int ano;
+    int mes;
+    int dia;
 
-//indentificacion intrinsica del individuo.
-char nombre [20];
-char apellido[20];
-int codigo;
+    // Variable para identificar si una fecha es mayor o menor que otra.
+    int cont;
 
-//fecha de nacimiento
-int ano;
-int mes;
-int dia;
-
-//variable para identificar si una fecha es mayor o menor que otra.
-int cont;
-
-//Apuntadores
-DatosEst *izq, *der;
+    // Apuntadores
+    DatosEst *izq, *der;
 };
 
-DatosEst *raiz, *aux, *aux2;
+DatosEst *raiz_codigo = NULL;
+DatosEst *raiz_fecha = NULL;
 
-//Registar arbol.
-//case 1
-void registrar (){
-    aux=(struct DatosEst *) malloc (sizeof(struct DatosEst));
-
-    cout<<"\t Bienvenido querido usuario"<<endl;
-    cout<<"Este software cumple con todas las especificaciones dadas"<<endl;
-    cout<<"\t Disfrutalo"<<endl;
-    cout<<"    "<<endl;
-    cout<<"    "<<endl;
-
-    cout<<"Ingrese su nombre"<<endl;
-    cout<<"Nombre: ";
-    cin>>aux->nombre;
-
-    cout<<"Ingrese su apellido"<<endl;
-    cout<<"Apellido: ";
-    cin>>aux->apellido;
-
-    cout<<" \t¡DATO IMPORTANTE! "<<endl;
-    cout<<"\tLa fecha debe estar en formato AÑO-MES-DIA   "<<endl;
-    cout<<"\tEjemplo -> 2024-05-12 "<<endl;
-    cout<<"\tSe debe indexar la fecha tal cual la muestra el ejemplo "<<endl;
-    cout<<"\tEjemplo -> 2024-05-12 "<<endl;
-    cout<<"Ingrese la fecha"<<endl;
-    cout<<"Fecha: ";
-    cin>>aux->ano,cout<<" - ", aux->mes,cout<<" - ", aux->dia,cout<<""<<endl;
-
-
-    cout<<"Ingrese el codigo"<<endl;
-    cout<<"codigo"<<endl;
-    cin>>aux->codigo;
-
-    aux->izq=aux->der=NULL;
-if (raiz==NULL)
-{
-    aux=raiz;
-    aux=NULL;
-    free(aux);
-}else if (raiz!= NULL)
-{
-    /* code */
-
-}
+void pocisionar(DatosEst *nuevo, DatosEst *&raiz) {
+    if (raiz == NULL) {
+        raiz = nuevo;
+    } else {
+        if (nuevo->codigo < raiz->codigo) {
+            pocisionar(nuevo, raiz->izq);
+        } else if (nuevo->codigo > raiz->codigo) {
+            pocisionar(nuevo, raiz->der);
+        } else {
+            if (nuevo->cont > raiz->cont) {
+                pocisionar(nuevo, raiz->der);
+            } else {
+                pocisionar(nuevo, raiz->izq);
+            }
+        }
+    }
 }
 
-//Funciones para el arbol que esta organizado por codigo.
-//case 2
-int mostrarPreOr_Codigo (DatosEst* nodo){
-  if(nodo!=NULL){
-    
-    cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
+void pocisionar_fecha(DatosEst *nuevo, DatosEst *&raiz) {
+    if (raiz == NULL) {
+        raiz = nuevo;
+    } else {
+        if (nuevo->cont < raiz->cont) {
+            pocisionar_fecha(nuevo, raiz->izq);
+        } else if (nuevo->cont > raiz->cont) {
+            pocisionar_fecha(nuevo, raiz->der);
+        } else {
+            pocisionar(nuevo, raiz->der);
+        }
+    }
+}
+
+void registrar() {
+    DatosEst *aux = new DatosEst;
+
+    cout << "\tBienvenido querido usuario" << endl;
+    cout << "Este software cumple con todas las especificaciones dadas" << endl;
+    cout << "\tDisfrútalo" << endl;
+    cout << "    " << endl;
+    cout << "    " << endl;
+
+    cout << "Ingrese su nombre: ";
+    cin >> aux->nombre;
+
+    cout << "Ingrese su apellido: ";
+    cin >> aux->apellido;
+
+    cout << "\t¡DATO IMPORTANTE!" << endl;
+    cout << "\tLa fecha debe estar en formato AÑO-MES-DIA" << endl;
+    cout << "\tEjemplo -> 2024-05-12" << endl;
+    cout << "\tSe debe indexar la fecha tal cual la muestra el ejemplo" << endl;
+    cout << "\tEjemplo -> 2024-05-12" << endl;
+    cout << "Ingresando la fecha..... "<<endl;
+    cout << "Ingrese el AÑO: ";
+    cin >> aux->ano;
+    cout << "Ingrese el MES: ";
+    cin >> aux->mes;
+    cout << "Ingrese el DIA: ";
+    cin >> aux->dia;
+    cout << "Fecha ingresada adecuadamente."<<endl;
+    cout << "     "<<endl;
+
+    cout << "Ingrese el código: ";
+    cin >> aux->codigo;
+
+    aux->cont = aux->ano + aux->mes + aux->dia;
+    aux->izq = aux->der = NULL;
+
+    pocisionar(aux, raiz_codigo);
+    pocisionar_fecha(aux, raiz_fecha);
+}
+
+void mostrarPreOr_Codigo(DatosEst *nodo) {
+    if (nodo != NULL) {
+        cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
         mostrarPreOr_Codigo(nodo->izq);
         mostrarPreOr_Codigo(nodo->der);
-    
-    
     }
-    return 0;
 }
-//case 3
-int mostrarPostOr_Codigo(DatosEstr* nodo){
-  if (nodo != NULL) {
+
+void mostrarInOr_Codigo(DatosEst *nodo) {
+    if (nodo != NULL) {
+        mostrarInOr_Codigo(nodo->izq);
+        cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
+        mostrarInOr_Codigo(nodo->der);
+    }
+}
+
+void mostrarPostOr_Codigo(DatosEst *nodo) {
+    if (nodo != NULL) {
         mostrarPostOr_Codigo(nodo->izq);
         mostrarPostOr_Codigo(nodo->der);
         cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
-    
-   
-}
-
-    return 0;
-}
-//case 4
-int mostrarInOr_Codigo(){
-    return 0;
-}
-
-//Funciones para el arbol que esta organizado por fecha.
-//case 5
-int mostrarPreOr_Fecha (){
-    return 0;
-}
-//case 6
-int mostrarPostOr_Fecha(){
-    return 0;
-}
-//case 7
-int mostrarInOr_Fecha(){
-    return 0;
-}
-
-//Buscar estudiante por el codigo o por la fecha.
-//case 8 y case 9.
-int buscar (int codigo, int cont){
-    return 0;
-}
-
-//Eliminar estudiante por el codigo.
-//case 10.
-int eliminar(){
-    buscar();
-    return 0;
-}
-//case 11
-int salir(){
-    cout<<"\tQuerido usuario."<<endl;
-    cout<<"Muchas gracias por usar los servicios de nuestro software."<<endl;
-    cout<<"\tHasta luego."<<endl;
-    return 0;
-}
- int defaul(){
-    cout<<"\tQuerido usuario."<<endl;
-    cout<<"La opcion digitada no pertence a ninguna funcion de los servicios de nuestro software."<<endl;
-    cout<<"\tIntenta de nuevo."<<endl;
-    
-
-    return 0;
-}
-
- 
-
-int main(){
-    int opc;
-    do
-    {
-        
-    cout<<" \t MENU"<<endl;
-    cout<<" 1. Resgistrar Estudiante \n 2. mostrar en Pre-Orden el Org_Codigo \n 3. Mostrar en Post-Orden el Org_Codigo"<<endl;
-    cout<<" 4. Mostrar en  In-Orden el Org_Codigo \n 5. Mostrar en Pre-Orden el Org_Fecha \n 6. Mostrar en Pos-Orden el Org_fecha"<<endl;
-    cout<<" 7. Mostrar en In-Orden el Org_fecha \n 8. Buscar por Codigo \n 9. Buscar por fecha \n 10. Eliminar \n 11. salir"<<endl;
-    cout<<"    "<<endl;
-    cout<<"Digite la opcion que desea: ";
-    cin>>opc;
-
-    switch (opc)
-    {
-    case 1:registrar();
-        break;
-    case 2:mostrarPreOr_Codigo();
-        break;
-    case 3:mostrarPostOr_Codigo();
-        break;
-    case 4:mostrarInOr_Codigo();
-        break;
-    case 5:mostrarPreOr_Fecha();
-        break;
-    case 6:mostrarPostOr_Fecha();
-        break;
-    case 7:mostrarInOr_Fecha();
-        break;
-    case 8:buscar(int codigo);
-        break;
-    case 9:buscar(int cont);
-        break;
-    case 10:eliminar();
-        break;
-    case 11: salir();
-        break;
-    
-    default:defaul();
-        break;
     }
-        
-    } while (opc!=11);
+}
 
+void mostrarPreOr_Fecha(DatosEst *nodo) {
+    if (nodo != NULL) {
+        cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
+        mostrarPreOr_Fecha(nodo->izq);
+        mostrarPreOr_Fecha(nodo->der);
+    }
+}
 
-   
-    
-    
+void mostrarInOr_Fecha(DatosEst *nodo) {
+    if (nodo != NULL) {
+        mostrarInOr_Fecha(nodo->izq);
+        cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
+        mostrarInOr_Fecha(nodo->der);
+    }
+}
 
+void mostrarPostOr_Fecha(DatosEst *nodo) {
+    if (nodo != NULL) {
+        mostrarPostOr_Fecha(nodo->izq);
+        mostrarPostOr_Fecha(nodo->der);
+        cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
+    }
+}
 
+DatosEst *buscar_codigo(DatosEst *raiz, int codigo) {
+    if (raiz == NULL || raiz->codigo == codigo) {
+        return raiz;
+    }
+
+    if (raiz->codigo < codigo) {
+        return buscar_codigo(raiz->der, codigo);
+    }
+
+    return buscar_codigo(raiz->izq, codigo);
+}
+
+DatosEst *buscar_fecha(DatosEst *raiz, int cont) {
+    if (raiz == NULL || raiz->cont == cont) {
+        return raiz;
+    }
+
+    if (raiz->cont < cont) {
+        return buscar_fecha(raiz->der, cont);
+    }
+
+    return buscar_fecha(raiz->izq, cont);
+}
+
+DatosEst *minimoValorNodo(DatosEst *nodo) {
+    DatosEst *actual = nodo;
+    while (actual && actual->izq != NULL) {
+        actual = actual->izq;
+    }
+    return actual;
+}
+
+DatosEst *eliminarNodo(DatosEst *raiz, int codigo) {
+    if (raiz == NULL) {
+        return raiz;
+    }
+
+    // Buscar en el subárbol derecho para eliminar
+    if (codigo > raiz->codigo) {
+        raiz->der = eliminarNodo(raiz->der, codigo);
+    }
+    // Buscar en el subárbol izquierdo para eliminar
+    else if (codigo < raiz->codigo) {
+        raiz->izq = eliminarNodo(raiz->izq, codigo);
+    }
+    // Si el nodo tiene solo un hijo o no tiene hijos
+    else {
+        // Nodo con solo un hijo o sin hijos
+        if (raiz->izq == NULL) {
+            DatosEst *temp = raiz->der;
+            free(raiz);
+            return temp;
+        } else if (raiz->der == NULL) {
+            DatosEst *temp = raiz->izq;
+            free(raiz);
+            return temp;
+        }
+
+        // Nodo con dos hijos: obtener sucesor inorden
+        DatosEst *temp = minimoValorNodo(raiz->der);
+
+        // Copiar el contenido del sucesor inorden al nodo actual
+        raiz->codigo = temp->codigo;
+        raiz->ano = temp->ano;
+        raiz->mes = temp->mes;
+        raiz->dia = temp->dia;
+        raiz->cont = temp->cont;
+
+        // Eliminar el sucesor inorden
+        raiz->der = eliminarNodo(raiz->der, temp->codigo);
+    }
+    return raiz;
+}
+
+void eliminar() {
+    int codigo;
+    cout << "Ingrese el código del estudiante que desea eliminar: ";
+    cin >> codigo;
+
+    raiz_codigo = eliminarNodo(raiz_codigo, codigo);
+    // Asegúrate de eliminar el nodo en el árbol ordenado por fecha también
+    // raiz_fecha = eliminarNodo(raiz_fecha, codigo);
+}
+
+void salir() {
+    cout << "\tQuerido usuario." << endl;
+    cout << "Muchas gracias por usar los servicios de nuestro software." << endl;
+    cout << "\tHasta luego." << endl;
+}
+
+int main() {
+    int opc;
+    do {
+        cout << "\t MENU" << endl;
+        cout << "1. Registrar Estudiante" << endl;
+        cout << "2. Mostrar en Pre-Orden el Org_Código" << endl;
+        cout << "3. Mostrar en Post-Orden el Org_Código" << endl;
+        cout << "4. Mostrar en In-Orden el Org_Código" << endl;
+        cout << "5. Mostrar en Pre-Orden el Org_Fecha" << endl;
+        cout << "6. Mostrar en Post-Orden el Org_Fecha" << endl;
+        cout << "7. Mostrar en In-Orden el Org_Fecha" << endl;
+        cout << "8. Buscar por Código" << endl;
+        cout << "9. Buscar por Fecha" << endl;
+        cout << "10. Eliminar Registro" << endl;
+        cout << "11. Salir" << endl;
+        cout << "Digite la opción que desea: ";
+        cin >> opc;
+
+        switch (opc) {
+            case 1:
+                registrar();
+                break;
+            case 2:
+                mostrarPreOr_Codigo(raiz_codigo);
+                break;
+            case 3:
+                mostrarPostOr_Codigo(raiz_codigo);
+                break;
+            case 4:
+                mostrarInOr_Codigo(raiz_codigo);
+                break;
+            case 5:
+                mostrarPreOr_Fecha(raiz_fecha);
+                break;
+            case 6:
+                mostrarPostOr_Fecha(raiz_fecha);
+                break;
+            case 7:
+                mostrarInOr_Fecha(raiz_fecha);
+                break;
+            case 8: {
+                int codigo;
+                cout << "Ingrese el código a buscar: ";
+                cin >> codigo;
+                DatosEst *encontrado = buscar_codigo(raiz_codigo, codigo);
+                if (encontrado != NULL) {
+                    cout << "Estudiante encontrado: " << encontrado->nombre << " " << encontrado->apellido << endl;
+                } else {
+                    cout << "Estudiante no encontrado." << endl;
+                }
+                break;
+            }
+            case 9: {
+                int cont;
+                cout << "Ingrese la fecha a buscar (AÑO-MES-DIA): ";
+                cin >> cont;
+                DatosEst *encontrado = buscar_fecha(raiz_fecha, cont);
+                if (encontrado != NULL) {
+                    cout << "Estudiante encontrado: " << encontrado->nombre << " " << encontrado->apellido << endl;
+                } else {
+                    cout << "Estudiante no encontrado." << endl;
+                }
+                break;
+            }
+            case 10:
+                eliminar();
+                break;
+            case 11:
+                salir();
+                break;
+            default:
+                cout << "\tQuerido usuario." << endl;
+                cout << "La opción digitada no pertenece a ninguna función de los servicios de nuestro software." << endl;
+                cout << "\tIntenta de nuevo." << endl;
+                break;
+        }
+    } while (opc != 11);
+
+    return 0;
 }
