@@ -1,60 +1,66 @@
-//Daniel Steve Montaño A.
-//Sebastian Salazar.
 #include <iostream>
 #include <malloc.h>
 using namespace std;
 
 struct DatosEst {
-    // Identificación intrínseca del individuo.
     char nombre[20];
     char apellido[20];
     int codigo;
-
-    // Fecha de nacimiento
     int ano;
     int mes;
     int dia;
-
-    // Variable para identificar si una fecha es mayor o menor que otra.
     int cont;
-
-    // Apuntadores
     DatosEst *izq, *der;
 };
 
 DatosEst *raiz_codigo = NULL;
 DatosEst *raiz_fecha = NULL;
 
-void pocisionar(DatosEst *nuevo, DatosEst *&raiz) {
+DatosEst *minimoValorNodo(DatosEst *nodo) {
+    DatosEst *actual = nodo;
+    while (actual && actual->izq != NULL) {
+        actual = actual->izq;
+    }
+    return actual;
+}
+
+void posicionar(DatosEst *nuevo, DatosEst *&raiz) {
     if (raiz == NULL) {
         raiz = nuevo;
     } else {
         if (nuevo->codigo < raiz->codigo) {
-            pocisionar(nuevo, raiz->izq);
-        } else if (nuevo->codigo > raiz->codigo) {
-            pocisionar(nuevo, raiz->der);
-        } else {
-            if (nuevo->cont > raiz->cont) {
-                pocisionar(nuevo, raiz->der);
-            } else {
-                pocisionar(nuevo, raiz->izq);
-            }
+            posicionar(nuevo, raiz->izq);
+        } else if (nuevo->codigo >= raiz->codigo) {
+            posicionar(nuevo, raiz->der);
         }
     }
 }
 
-void pocisionar_fecha(DatosEst *nuevo, DatosEst *&raiz) {
+void posicionar_fecha(DatosEst *nuevo, DatosEst *&raiz) {
     if (raiz == NULL) {
         raiz = nuevo;
     } else {
         if (nuevo->cont < raiz->cont) {
-            pocisionar_fecha(nuevo, raiz->izq);
-        } else if (nuevo->cont > raiz->cont) {
-            pocisionar_fecha(nuevo, raiz->der);
-        } else {
-            pocisionar(nuevo, raiz->der);
+            posicionar_fecha(nuevo, raiz->izq);
+        } else if (nuevo->cont >= raiz->cont) {
+            posicionar_fecha(nuevo, raiz->der);
         }
     }
+}
+
+void registrar_fecha(DatosEst *aux) {
+    DatosEst *aux1 = new DatosEst;
+    for (int i = 0; i < 20; ++i) {
+        aux1->nombre[i] = aux->nombre[i];
+        aux1->apellido[i] = aux->apellido[i];
+    }
+    aux1->ano = aux->ano;
+    aux1->mes = aux->mes;
+    aux1->dia = aux->dia;
+    aux1->codigo = aux->codigo;
+    aux1->cont = aux->cont;
+
+    posicionar_fecha(aux1, raiz_fecha);
 }
 
 void registrar() {
@@ -72,20 +78,14 @@ void registrar() {
     cout << "Ingrese su apellido: ";
     cin >> aux->apellido;
 
-    cout << "\t¡DATO IMPORTANTE!" << endl;
-    cout << "\tLa fecha debe estar en formato AÑO-MES-DIA" << endl;
-    cout << "\tEjemplo -> 2024-05-12" << endl;
-    cout << "\tSe debe indexar la fecha tal cual la muestra el ejemplo" << endl;
-    cout << "\tEjemplo -> 2024-05-12" << endl;
-    cout << "Ingresando la fecha..... "<<endl;
-    cout << "Ingrese el AÑO: ";
+    cout << "Ingrese el año: ";
     cin >> aux->ano;
-    cout << "Ingrese el MES: ";
+
+    cout << "Ingrese el mes: ";
     cin >> aux->mes;
-    cout << "Ingrese el DIA: ";
+
+    cout << "Ingrese el dia: ";
     cin >> aux->dia;
-    cout << "Fecha ingresada adecuadamente."<<endl;
-    cout << "     "<<endl;
 
     cout << "Ingrese el código: ";
     cin >> aux->codigo;
@@ -93,8 +93,8 @@ void registrar() {
     aux->cont = aux->ano + aux->mes + aux->dia;
     aux->izq = aux->der = NULL;
 
-    pocisionar(aux, raiz_codigo);
-    pocisionar_fecha(aux, raiz_fecha);
+    posicionar(aux, raiz_codigo);
+    registrar_fecha(aux);
 }
 
 void mostrarPreOr_Codigo(DatosEst *nodo) {
@@ -123,7 +123,7 @@ void mostrarPostOr_Codigo(DatosEst *nodo) {
 
 void mostrarPreOr_Fecha(DatosEst *nodo) {
     if (nodo != NULL) {
-        cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
+        cout << "Código: "<< nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
         mostrarPreOr_Fecha(nodo->izq);
         mostrarPreOr_Fecha(nodo->der);
     }
@@ -157,24 +157,20 @@ DatosEst *buscar_codigo(DatosEst *raiz, int codigo) {
     return buscar_codigo(raiz->izq, codigo);
 }
 
-DatosEst *buscar_fecha(DatosEst *raiz, int cont) {
-    if (raiz == NULL || raiz->cont == cont) {
+DatosEst *buscar_fecha(DatosEst *raiz, int& ano, int& mes, int& dia) {
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    if (raiz->ano == ano && raiz->mes == mes && raiz->dia == dia) {
         return raiz;
     }
 
-    if (raiz->cont < cont) {
-        return buscar_fecha(raiz->der, cont);
+    if (raiz->ano < ano || (raiz->ano == ano && raiz->mes < mes) || (raiz->ano == ano && raiz->mes == mes && raiz->dia < dia)) {
+        return buscar_fecha(raiz->der, ano, mes, dia);
     }
 
-    return buscar_fecha(raiz->izq, cont);
-}
-
-DatosEst *minimoValorNodo(DatosEst *nodo) {
-    DatosEst *actual = nodo;
-    while (actual && actual->izq != NULL) {
-        actual = actual->izq;
-    }
-    return actual;
+    return buscar_fecha(raiz->izq, ano, mes,dia);
 }
 
 DatosEst *eliminarNodo(DatosEst *raiz, int codigo) {
@@ -182,38 +178,29 @@ DatosEst *eliminarNodo(DatosEst *raiz, int codigo) {
         return raiz;
     }
 
-    // Buscar en el subárbol derecho para eliminar
-    if (codigo > raiz->codigo) {
-        raiz->der = eliminarNodo(raiz->der, codigo);
-    }
-    // Buscar en el subárbol izquierdo para eliminar
-    else if (codigo < raiz->codigo) {
+    if (raiz->codigo > codigo) {
         raiz->izq = eliminarNodo(raiz->izq, codigo);
-    }
-    // Si el nodo tiene solo un hijo o no tiene hijos
-    else {
-        // Nodo con solo un hijo o sin hijos
+    } else if (raiz->codigo < codigo) {
+        raiz->der = eliminarNodo(raiz->der, codigo);
+    } else {
         if (raiz->izq == NULL) {
             DatosEst *temp = raiz->der;
-            free(raiz);
+            delete raiz;
             return temp;
         } else if (raiz->der == NULL) {
             DatosEst *temp = raiz->izq;
-            free(raiz);
+            delete raiz;
             return temp;
         }
 
-        // Nodo con dos hijos: obtener sucesor inorden
         DatosEst *temp = minimoValorNodo(raiz->der);
 
-        // Copiar el contenido del sucesor inorden al nodo actual
         raiz->codigo = temp->codigo;
         raiz->ano = temp->ano;
         raiz->mes = temp->mes;
         raiz->dia = temp->dia;
         raiz->cont = temp->cont;
 
-        // Eliminar el sucesor inorden
         raiz->der = eliminarNodo(raiz->der, temp->codigo);
     }
     return raiz;
@@ -225,8 +212,9 @@ void eliminar() {
     cin >> codigo;
 
     raiz_codigo = eliminarNodo(raiz_codigo, codigo);
-    // Asegúrate de eliminar el nodo en el árbol ordenado por fecha también
-    // raiz_fecha = eliminarNodo(raiz_fecha, codigo);
+    
+    cout << "Se elimino al Est "<<endl;
+    
 }
 
 void salir() {
@@ -288,10 +276,16 @@ int main() {
                 break;
             }
             case 9: {
-                int cont;
-                cout << "Ingrese la fecha a buscar (AÑO-MES-DIA): ";
-                cin >> cont;
-                DatosEst *encontrado = buscar_fecha(raiz_fecha, cont);
+                int ano, mes, dia, cont;
+                cout << "Ingrese la fecha a buscar (AÑO MES DIA): "<<endl;
+                cout << "Ingrese la AÑO: ";
+                cin >>ano;
+                cout << "Ingrese el MES: ";
+                cin>> mes;
+                cout << "Ingrese el DIA: ";
+                cin>> dia;
+                cont= ano + mes + dia;
+                DatosEst *encontrado = buscar_fecha(raiz_fecha, ano, mes, dia);
                 if (encontrado != NULL) {
                     cout << "Estudiante encontrado: " << encontrado->nombre << " " << encontrado->apellido << endl;
                 } else {
