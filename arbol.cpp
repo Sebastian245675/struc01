@@ -1,8 +1,14 @@
+
+}// Juan Sebastian Salazar Aguirre
+// stiven montaño
+
+
 #include <iostream>
+
 #include <malloc.h>
 using namespace std;
 
-struct DatosEst {
+struct Estudiante {
     char nombre[20];
     char apellido[20];
     int codigo;
@@ -10,21 +16,26 @@ struct DatosEst {
     int mes;
     int dia;
     int cont;
-    DatosEst *izq, *der;
+    Estudiante *izq, *der;
 };
 
-DatosEst *raiz_codigo = NULL;
-DatosEst *raiz_fecha = NULL;
+Estudiante *raiz_por_codigo = NULL;
+Estudiante *raiz_por_fecha = NULL;
 
-DatosEst *minimoValorNodo(DatosEst *nodo) {
-    DatosEst *actual = nodo;
+// Variables globales para buscar por fecha
+int buscar_ano;
+int buscar_mes;
+int buscar_dia;
+
+Estudiante *minimoValorNodo(Estudiante *nodo) {
+    Estudiante *actual = nodo;
     while (actual && actual->izq != NULL) {
         actual = actual->izq;
     }
     return actual;
 }
 
-void posicionar(DatosEst *nuevo, DatosEst *&raiz) {
+void posicionar(Estudiante *nuevo, Estudiante *&raiz) {
     if (raiz == NULL) {
         raiz = nuevo;
     } else {
@@ -36,7 +47,7 @@ void posicionar(DatosEst *nuevo, DatosEst *&raiz) {
     }
 }
 
-void posicionar_fecha(DatosEst *nuevo, DatosEst *&raiz) {
+void posicionar_fecha(Estudiante *nuevo, Estudiante *&raiz) {
     if (raiz == NULL) {
         raiz = nuevo;
     } else {
@@ -48,8 +59,8 @@ void posicionar_fecha(DatosEst *nuevo, DatosEst *&raiz) {
     }
 }
 
-void registrar_fecha(DatosEst *aux) {
-    DatosEst *aux1 = new DatosEst;
+void registrar_fecha(Estudiante *aux) {
+    Estudiante *aux1 = new Estudiante;
     for (int i = 0; i < 20; ++i) {
         aux1->nombre[i] = aux->nombre[i];
         aux1->apellido[i] = aux->apellido[i];
@@ -60,11 +71,11 @@ void registrar_fecha(DatosEst *aux) {
     aux1->codigo = aux->codigo;
     aux1->cont = aux->cont;
 
-    posicionar_fecha(aux1, raiz_fecha);
+    posicionar_fecha(aux1, raiz_por_fecha);
 }
 
 void registrar() {
-    DatosEst *aux = new DatosEst;
+    Estudiante *aux = new Estudiante;
 
     cout << "\tBienvenido querido usuario" << endl;
     cout << "Este software cumple con todas las especificaciones dadas" << endl;
@@ -93,11 +104,11 @@ void registrar() {
     aux->cont = aux->ano + aux->mes + aux->dia;
     aux->izq = aux->der = NULL;
 
-    posicionar(aux, raiz_codigo);
+    posicionar(aux, raiz_por_codigo);
     registrar_fecha(aux);
 }
 
-void mostrarPreOr_Codigo(DatosEst *nodo) {
+void mostrarPreOr_Codigo(Estudiante *nodo) {
     if (nodo != NULL) {
         cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
         mostrarPreOr_Codigo(nodo->izq);
@@ -105,7 +116,7 @@ void mostrarPreOr_Codigo(DatosEst *nodo) {
     }
 }
 
-void mostrarInOr_Codigo(DatosEst *nodo) {
+void mostrarInOr_Codigo(Estudiante *nodo) {
     if (nodo != NULL) {
         mostrarInOr_Codigo(nodo->izq);
         cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
@@ -113,7 +124,7 @@ void mostrarInOr_Codigo(DatosEst *nodo) {
     }
 }
 
-void mostrarPostOr_Codigo(DatosEst *nodo) {
+void mostrarPostOr_Codigo(Estudiante *nodo) {
     if (nodo != NULL) {
         mostrarPostOr_Codigo(nodo->izq);
         mostrarPostOr_Codigo(nodo->der);
@@ -121,7 +132,7 @@ void mostrarPostOr_Codigo(DatosEst *nodo) {
     }
 }
 
-void mostrarPreOr_Fecha(DatosEst *nodo) {
+void mostrarPreOr_Fecha(Estudiante *nodo) {
     if (nodo != NULL) {
         cout << "Código: "<< nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
         mostrarPreOr_Fecha(nodo->izq);
@@ -129,7 +140,7 @@ void mostrarPreOr_Fecha(DatosEst *nodo) {
     }
 }
 
-void mostrarInOr_Fecha(DatosEst *nodo) {
+void mostrarInOr_Fecha(Estudiante *nodo) {
     if (nodo != NULL) {
         mostrarInOr_Fecha(nodo->izq);
         cout << "Código: " << nodo->codigo << ", Nombre: " << nodo->nombre << " " << nodo->apellido << ", Fecha de Nacimiento: " << nodo->ano << "-" << nodo->mes << "-" << nodo->dia << endl;
@@ -137,7 +148,7 @@ void mostrarInOr_Fecha(DatosEst *nodo) {
     }
 }
 
-void mostrarPostOr_Fecha(DatosEst *nodo) {
+void mostrarPostOr_Fecha(Estudiante *nodo) {
     if (nodo != NULL) {
         mostrarPostOr_Fecha(nodo->izq);
         mostrarPostOr_Fecha(nodo->der);
@@ -145,7 +156,7 @@ void mostrarPostOr_Fecha(DatosEst *nodo) {
     }
 }
 
-DatosEst *buscar_codigo(DatosEst *raiz, int codigo) {
+Estudiante *buscar_codigo(Estudiante *raiz, int codigo) {
     if (raiz == NULL || raiz->codigo == codigo) {
         return raiz;
     }
@@ -157,23 +168,23 @@ DatosEst *buscar_codigo(DatosEst *raiz, int codigo) {
     return buscar_codigo(raiz->izq, codigo);
 }
 
-DatosEst *buscar_fecha(DatosEst *raiz, int& ano, int& mes, int& dia) {
+Estudiante *buscar_fecha(Estudiante *raiz) {
     if (raiz == NULL) {
         return NULL;
     }
 
-    if (raiz->ano == ano && raiz->mes == mes && raiz->dia == dia) {
+    if (raiz->ano == buscar_ano && raiz->mes == buscar_mes && raiz->dia == buscar_dia) {
         return raiz;
     }
 
-    if (raiz->ano < ano || (raiz->ano == ano && raiz->mes < mes) || (raiz->ano == ano && raiz->mes == mes && raiz->dia < dia)) {
-        return buscar_fecha(raiz->der, ano, mes, dia);
+    if (raiz->ano < buscar_ano || (raiz->ano == buscar_ano && raiz->mes < buscar_mes) || (raiz->ano == buscar_ano && raiz->mes == buscar_mes&& raiz->dia < buscar_dia)) {
+        return buscar_fecha(raiz->der);
     }
 
-    return buscar_fecha(raiz->izq, ano, mes,dia);
+    return buscar_fecha(raiz->izq);
 }
 
-DatosEst *eliminarNodo(DatosEst *raiz, int codigo) {
+Estudiante *eliminarNodo(Estudiante *raiz, int codigo) {
     if (raiz == NULL) {
         return raiz;
     }
@@ -184,16 +195,16 @@ DatosEst *eliminarNodo(DatosEst *raiz, int codigo) {
         raiz->der = eliminarNodo(raiz->der, codigo);
     } else {
         if (raiz->izq == NULL) {
-            DatosEst *temp = raiz->der;
+            Estudiante *temp = raiz->der;
             delete raiz;
             return temp;
         } else if (raiz->der == NULL) {
-            DatosEst *temp = raiz->izq;
+            Estudiante *temp = raiz->izq;
             delete raiz;
             return temp;
         }
 
-        DatosEst *temp = minimoValorNodo(raiz->der);
+        Estudiante *temp = minimoValorNodo(raiz->der);
 
         raiz->codigo = temp->codigo;
         raiz->ano = temp->ano;
@@ -211,10 +222,9 @@ void eliminar() {
     cout << "Ingrese el código del estudiante que desea eliminar: ";
     cin >> codigo;
 
-    raiz_codigo = eliminarNodo(raiz_codigo, codigo);
-    
-    cout << "Se elimino al Est "<<endl;
-    
+    raiz_por_codigo = eliminarNodo(raiz_por_codigo, codigo);
+
+    cout << "Se eliminó al estudiante." << endl;
 }
 
 void salir() {
@@ -224,7 +234,7 @@ void salir() {
 }
 
 int main() {
-    int opc;
+    int opcion;
     do {
         cout << "\t MENU" << endl;
         cout << "1. Registrar Estudiante" << endl;
@@ -239,35 +249,35 @@ int main() {
         cout << "10. Eliminar Registro" << endl;
         cout << "11. Salir" << endl;
         cout << "Digite la opción que desea: ";
-        cin >> opc;
+        cin >> opcion;
 
-        switch (opc) {
+        switch (opcion) {
             case 1:
                 registrar();
                 break;
             case 2:
-                mostrarPreOr_Codigo(raiz_codigo);
+                mostrarPreOr_Codigo(raiz_por_codigo);
                 break;
             case 3:
-                mostrarPostOr_Codigo(raiz_codigo);
+                mostrarPostOr_Codigo(raiz_por_codigo);
                 break;
             case 4:
-                mostrarInOr_Codigo(raiz_codigo);
+                mostrarInOr_Codigo(raiz_por_codigo);
                 break;
             case 5:
-                mostrarPreOr_Fecha(raiz_fecha);
+                mostrarPreOr_Fecha(raiz_por_fecha);
                 break;
             case 6:
-                mostrarPostOr_Fecha(raiz_fecha);
+                mostrarPostOr_Fecha(raiz_por_fecha);
                 break;
             case 7:
-                mostrarInOr_Fecha(raiz_fecha);
+                mostrarInOr_Fecha(raiz_por_fecha);
                 break;
             case 8: {
                 int codigo;
                 cout << "Ingrese el código a buscar: ";
                 cin >> codigo;
-                DatosEst *encontrado = buscar_codigo(raiz_codigo, codigo);
+                Estudiante *encontrado = buscar_codigo(raiz_por_codigo, codigo);
                 if (encontrado != NULL) {
                     cout << "Estudiante encontrado: " << encontrado->nombre << " " << encontrado->apellido << endl;
                 } else {
@@ -276,16 +286,14 @@ int main() {
                 break;
             }
             case 9: {
-                int ano, mes, dia, cont;
                 cout << "Ingrese la fecha a buscar (AÑO MES DIA): "<<endl;
-                cout << "Ingrese la AÑO: ";
-                cin >>ano;
+                cout << "Ingrese el AÑO: ";
+                cin >> buscar_ano;
                 cout << "Ingrese el MES: ";
-                cin>> mes;
+                cin >> buscar_mes;
                 cout << "Ingrese el DIA: ";
-                cin>> dia;
-                cont= ano + mes + dia;
-                DatosEst *encontrado = buscar_fecha(raiz_fecha, ano, mes, dia);
+                cin >> buscar_dia;
+                Estudiante *encontrado = buscar_fecha(raiz_por_fecha);
                 if (encontrado != NULL) {
                     cout << "Estudiante encontrado: " << encontrado->nombre << " " << encontrado->apellido << endl;
                 } else {
@@ -305,7 +313,7 @@ int main() {
                 cout << "\tIntenta de nuevo." << endl;
                 break;
         }
-    } while (opc != 11);
+    } while (opcion != 11);
 
     return 0;
 }
