@@ -4,7 +4,7 @@ using namespace std;
 
 struct viaje {
     int id;
-    string matricula;
+    int matricula;
     string nombredembarcacion;
     string destino;
     double precio;
@@ -12,16 +12,17 @@ struct viaje {
     viaje *izq;
     viaje *der;
     int altura;
-    int año;
+    int ano;
     int mes;
     int dia;
 };
 struct viaje*raiz, *aux;
+// esto lo dejo el profe lo unico de cambiar seria como se va a insertar osea el id
 int crearviaje();
 struct viaje* insertar(struct viaje* viaje);
 int obtenerAltura(struct viaje *n);
 int mayor(int a, int b);
-struct vaiaje* rotarDerecha(struct viaje *y);
+struct viaje* rotarDerecha(struct viaje *y);
 struct viaje* rotarIzquierda(struct viaje *x);
 int obtenerBalance(struct viaje *n);
 void preOrden(struct viaje *viaje);                                                
@@ -43,8 +44,19 @@ int crearviaje() {
     aux->altura = 1;
     return 0;
 }
-int buscarporid(){
 
+
+
+//no encuentro otra forma de sacar los primeros dos caracteres de la matricula
+
+int generaridentificador(const string&matricula, int anio, int mes, int dia){
+string doscaracteres= matricula.substr(0,2);
+int sumamatricula=stoi(doscaracteres);
+return sumamatricula+anio+mes+dia;
+
+}
+int buscarporid(){
+//esto seria casi lo ultimo porque precisamente el avl sera para buscar el id mas eficiente
 
 
 
@@ -94,13 +106,13 @@ int obtenerBalance(struct viaje *n) {
 }
 
 struct viaje* insertar(struct viaje* viaje) {
-    if (nodo == NULL) {
+    if (viaje== NULL) {
         return aux;
     }
 
-    if (aux->value < viaje->value) {
-        nodo->izq = insertar(viaje->izq);
-    } else if (aux->value > viaje->value) {
+    if (aux->precio< viaje->precio) {
+        viaje->izq = insertar(viaje->izq);
+    } else if (aux->precio> viaje->precio) {
         viaje->der = insertar(viaje->der);
     } else {
         return viaje;
@@ -110,21 +122,21 @@ struct viaje* insertar(struct viaje* viaje) {
 
     int balance = obtenerBalance(viaje);
 
-    if (balance > 1 && aux->value < viaje->izq->value) {
+    if (balance > 1 && aux->precio < viaje->izq->precio) {
         return rotarDerecha(viaje);
     }
 
-    if (balance < -1 && aux->value > viaje->der->value) {
+    if (balance < -1 && aux->precio> viaje->der->precio) {
         return rotarIzquierda(viaje);
     }
 
-    if (balance > 1 && aux->value > nodo->izq->value) {
+    if (balance > 1 && aux->precio > viaje->izq->precio) {
         viaje->izq = rotarIzquierda(viaje->izq);
         return rotarDerecha(viaje);
     }
 
-    if (balance < -1 && aux->value < viaje->der->value) {
-        nodo->der = rotarDerecha(viaje->der);
+    if (balance < -1 && aux->precio < viaje->der->precio) {
+        viaje->der = rotarDerecha(viaje->der);
         return rotarIzquierda(viaje);
     }
 
@@ -133,7 +145,7 @@ struct viaje* insertar(struct viaje* viaje) {
 
 void preOrden(struct viaje *nodo) {
     if (nodo != NULL) {
-        cout << nodo->value << " ";
+        cout << nodo->precio<< " ";
         preOrden(nodo->izq);
         preOrden(nodo->der);
     }
@@ -142,7 +154,7 @@ void preOrden(struct viaje *nodo) {
 int main() {
     raiz = NULL;
     int opc = 0;
-    do {
+    do {//esto aun no lo muevas porque se putea esto, haz las funciones
         cout << "Menu de opciones" << endl;
         cout << "1. Registrar un nodo" << endl;
         cout << "2. Mostrar Arbol" << endl;
