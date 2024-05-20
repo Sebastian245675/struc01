@@ -5,7 +5,7 @@ using namespace std;
 struct viaje {
     int id;
     int matricula;
-    string nombredembarcacion;
+    string  nombredembarcacion;
     string destino;
     double precio;
     int capacidad;
@@ -33,9 +33,9 @@ int crearviaje() {
     cin >> aux->matricula;
      cout << "ingrsese el nombre de la embarcacion ";
     cin >> aux-> nombredembarcacion;
-      cout << "¡cual es el destino del viaje? ";
+      cout << "cual es el destino del viaje ";
     cin >> aux-> destino;
-     cout << "¡fechad del viaje? ";
+     cout << "fechad del viaje ";
     cin >> aux-> destino;
      cout << "ingrese el precio ";
     cin >> aux-> precio;
@@ -49,15 +49,22 @@ int crearviaje() {
 
 //no encuentro otra forma de sacar los primeros dos caracteres de la matricula
 
-int generaridentificador(const string&matricula, int anio, int mes, int dia){
-string doscaracteres= matricula.substr(0,2);
-int sumamatricula=stoi(doscaracteres);
-return sumamatricula+anio+mes+dia;
+int generaridentificador(viaje* aux) {
+    string matricula_str = to_string(aux->matricula); 
+    string doscaracteres = matricula_str.substr(0, 2); 
+    int sumamatricula = stoi(doscaracteres); 
+    aux->id = sumamatricula + aux->ano + aux->mes + aux->dia; 
+    return aux->id; }
 
+int buscarporid(int id){
+if (aux->id==NULL){
+     cout << "la embarcacionno existe";
 }
-int buscarporid(){
-//esto seria casi lo ultimo porque precisamente el avl sera para buscar el id mas eficiente
 
+else if (aux->id==id)
+{
+      cout << "datos"<<aux->matricula<<aux->nombredembarcacion<<aux->destino;
+}
 
 
 }
@@ -110,9 +117,9 @@ struct viaje* insertar(struct viaje* viaje) {
         return aux;
     }
 
-    if (aux->precio< viaje->precio) {
+    if (aux->id< viaje->id) {
         viaje->izq = insertar(viaje->izq);
-    } else if (aux->precio> viaje->precio) {
+    } else if (aux->id> viaje->precio) {
         viaje->der = insertar(viaje->der);
     } else {
         return viaje;
@@ -122,20 +129,20 @@ struct viaje* insertar(struct viaje* viaje) {
 
     int balance = obtenerBalance(viaje);
 
-    if (balance > 1 && aux->precio < viaje->izq->precio) {
+    if (balance > 1 && aux->id < viaje->izq->id) {
         return rotarDerecha(viaje);
     }
 
-    if (balance < -1 && aux->precio> viaje->der->precio) {
+    if (balance < -1 && aux->id> viaje->der->id) {
         return rotarIzquierda(viaje);
     }
 
-    if (balance > 1 && aux->precio > viaje->izq->precio) {
+    if (balance > 1 && aux->id > viaje->izq->id) {
         viaje->izq = rotarIzquierda(viaje->izq);
         return rotarDerecha(viaje);
     }
 
-    if (balance < -1 && aux->precio < viaje->der->precio) {
+    if (balance < -1 && aux->precio < viaje->der->id) {
         viaje->der = rotarDerecha(viaje->der);
         return rotarIzquierda(viaje);
     }
@@ -145,7 +152,7 @@ struct viaje* insertar(struct viaje* viaje) {
 
 void preOrden(struct viaje *nodo) {
     if (nodo != NULL) {
-        cout << nodo->precio<< " ";
+        cout << nodo->id<< "posicion de ids ";
         preOrden(nodo->izq);
         preOrden(nodo->der);
     }
