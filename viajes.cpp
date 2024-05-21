@@ -1,12 +1,12 @@
 #include <iostream>
-
+#include <malloc.h>
+#include <string>
 using namespace std;
-
 struct viaje {
     int id;
     int matricula;
-    string  nombredembarcacion;
-    string destino;
+      char  nm[20];
+    char destino [20];
     double precio;
     int capacidad;
     viaje *izq;
@@ -17,9 +17,8 @@ struct viaje {
     int dia;
 };
 struct viaje*raiz, *aux;
-// esto lo dejo el profe lo unico de cambiar seria como se va a insertar osea el id
 int crearviaje();
-struct viaje* insertar(struct viaje* viaje);
+struct viaje* insertar(struct viaje* raiz, struct viaje*viaje);
 int obtenerAltura(struct viaje *n);
 int mayor(int a, int b);
 struct viaje* rotarDerecha(struct viaje *y);
@@ -32,17 +31,17 @@ int crearviaje() {
     cout << "ingrese la matricula: ";
     cin >> aux->matricula;
      cout << "ingrsese el nombre de la embarcacion ";
-    cin >> aux-> nombredembarcacion;
+    cin >>aux->nm;
       cout << "cual es el destino del viaje ";
-    cin >> aux-> destino;
+    cin >>aux->destino;
      cout << "fechad del viaje ";
-    cin >> aux-> destino;
+    cin >> aux->ano>>aux->mes>>aux->dia; 
      cout << "ingrese el precio ";
     cin >> aux-> precio;
     aux->izq = NULL;
     aux->der = NULL;
     aux->altura = 1;
-    return 0;
+    
 }
 
 
@@ -56,16 +55,16 @@ int generaridentificador(viaje* aux) {
     aux->id = sumamatricula + aux->ano + aux->mes + aux->dia; 
     return aux->id; }
 
-int buscarporid(int id){
-if (aux->id==NULL){
+int buscarporid(int id, viaje*aux){
+if (aux==NULL){
      cout << "la embarcacionno existe";
+     return -1;
 }
 
 else if (aux->id==id)
 {
-      cout << "datos"<<aux->matricula<<aux->nombredembarcacion<<aux->destino;
+      cout << "datos"<<aux->matricula<<aux->nm<<aux->destino;
 }
-
 
 }
 int obtenerAltura(struct viaje *n) {
@@ -152,7 +151,7 @@ struct viaje* insertar(struct viaje* viaje) {
 
 void preOrden(struct viaje *nodo) {
     if (nodo != NULL) {
-        cout << nodo->id<< "posicion de ids ";
+        cout << nodo->id<< "";
         preOrden(nodo->izq);
         preOrden(nodo->der);
     }
@@ -173,7 +172,7 @@ int main() {
                 raiz = insertar(raiz);
                 break;
             case 2:
-                buscarporid();
+                preOrden(raiz);
                 break;
         }
     } while (opc != 3);
