@@ -3,20 +3,46 @@
 #include <string>
 using namespace std;
 struct viaje {
-    int id;
-    int matricula;
-      char  nm[20];
-    char destino [20];
+    //precio
     double precio;
-    int capacidad;
-    viaje *izq;
-    viaje *der;
-    int altura;
+
+     //destino
+    char destino [20];
+
+    //matricula
+    int matricula;
+
+    //nombre
+    char  nm[20];
+
+    //fecha
     int ano;
     int mes;
     int dia;
+
+    //capacidad
+    int capacidad;
+     
+    //identificador unico
+    int id;   
+    
+    //izquierda y derecha del n
+    viaje *izq;
+    viaje *der;
+
+    //AVL
+    int altura;
 };
+
+struct pasajero{
+    char nombre[10];
+    char apellido[10];
+    int edad;
+    pasajero *sig;
+};
+
 struct viaje*raiz, *aux;
+struct pasajero *aux1, *cab, *aux2;
 int crearviaje();
 struct viaje* insertar(struct viaje* raiz, struct viaje*viaje);
 int obtenerAltura(struct viaje *n);
@@ -34,8 +60,12 @@ int crearviaje() {
     cin >>aux->nm;
       cout << "cual es el destino del viaje ";
     cin >>aux->destino;
-     cout << "fechad del viaje ";
-    cin >> aux->ano>>aux->mes>>aux->dia; 
+     cout << "fecha del viaje: ";
+     cout << "Año / mes / dia"<<endl;
+    cout << "Año: ",cin >> aux->ano,cout << "mes: ", cin>>aux->mes, cout << "dia:", cin>>aux->dia; 
+     
+    
+     cout << " "<< endl;
      cout << "ingrese el precio ";
     cin >> aux-> precio;
     aux->izq = NULL;
@@ -43,6 +73,7 @@ int crearviaje() {
     aux->altura = 1;
     
 }
+
 
 
 
@@ -54,6 +85,33 @@ int generaridentificador(viaje* aux) {
     int sumamatricula = stoi(doscaracteres); 
     aux->id = sumamatricula + aux->ano + aux->mes + aux->dia; 
     return aux->id; }
+/*
+
+    podemos cambiar el tipo de dato de la matricula a char y luego solo usar un for bro.
+    ponemos char matricula en el struct; 
+    luego un for (int i=0; i < 2; i++){
+        aux->matricula[o]= aqui una variable que guarde el primer caracter.
+        aux->matricula[1]= aqui una variable que guarde el 2do caracter.
+        luego se usan esa variables que pueden ser locales para hacer las vainas.
+        es una idea toca implementarla, solo es que me diga
+    }
+    bro abjo lo intente implementar pero da error, creo va tocar dejarlo asi.
+
+    
+int generaridentificador(viaje* aux) {
+    char dato_uno = 0;
+    char dato_dos = 0;
+
+    for (int i = 0; i < 2; ++i) {
+        dato_uno = aux->matricula[i]; 
+        dato_dos = aux->matricula[i + 1]; 
+    }
+
+    aux->id = dato_uno, dato_dos,  aux->ano + aux->mes + aux->dia; 
+    return aux->id;
+}
+algo asi bro
+*/
 
 int buscarporid(int id, viaje*aux){
 if (aux==NULL){
@@ -156,15 +214,77 @@ void preOrden(struct viaje *nodo) {
         preOrden(nodo->der);
     }
 }
+int Registrarpas(){
+    //funcion buscar()
+    if(cab==NULL)
+    {
+    cab = ((struct pasajero *) malloc(sizeof(struct pasajero)));
+    cout << "Ingrese el nombre del pasajero: ";
+    cin >> cab->nombre; //nombre
+    cout << "Ingrese el apellido del pasajero: ";
+    cin >> cab->apellido; //apellido
+    cout << "Ingrese la  edad: ";
+    cin >> cab->edad; //edad
+
+    
+
+        cab->sig = NULL;
+        free(aux);
+    }
+    else
+    {
+        aux1 = (struct pasajero *)malloc(sizeof(struct pasajero));
+
+
+    cout << "Ingrese el nombre del pasajero: ";
+    cin >> aux1->nombre; //nombre
+
+    cout << "Ingrese el apellido del pasajero: ";
+    cin >> aux1->apellido; //apellido
+
+    cout << "Ingrese la  edad: ";
+    cin >> aux1->edad; //edad
+
+        cout<<"\t Gracias por registrar un nuevo pasajero: "<<endl;
+
+
+        aux1->sig = NULL;
+        
+        aux2 = cab;
+        
+        aux2->sig = aux1;
+
+        aux1 = NULL;
+
+        aux2 = aux1;
+
+        free(aux);
+
+        free(aux2);
+    }
+
+    return 0;
+}
+    
+
+
+
 
 int main() {
     raiz = NULL;
     int opc = 0;
     do {//esto aun no lo muevas porque se putea esto, haz las funciones
-        cout << "Menu de opciones" << endl;
-        cout << "1. Registrar un nodo" << endl;
-        cout << "2. Mostrar Arbol" << endl;
-        cout << "3. Salir" << endl;
+        cout << "----------------" << endl;
+        cout << "\tMenu de opciones" << endl;
+        cout << "----------------" << endl;
+        cout << "    " << endl;
+        cout << "1. Registrar un nuevo viaje." << endl;
+        cout << "2. Listar todos los viajes." << endl;
+        cout << "3. Buscar un viaje por identificador" << endl;
+        cout << "4. Eliminar un viaje por identificador." << endl;
+        cout << "5. Registrar un pasajero en un viaje." << endl;
+        cout << "6. Listar todos los pasajeros de un viaje." << endl;
+        cout << "7. Salir" << endl;
         cin >> opc;
         switch (opc) {
             case 1:
@@ -174,7 +294,9 @@ int main() {
             case 2:
                 preOrden(raiz);
                 break;
+            case 5:
+                Registrarpas();
         }
-    } while (opc != 3);
+    } while (opc != 7);
     return 0;
 }
