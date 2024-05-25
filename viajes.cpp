@@ -138,7 +138,7 @@ if (aux==NULL){
     } else  {
         return buscarporid(id, aux->der);
     }
-return 0;
+
 
 }
 int obtenerAltura(struct viaje *n) {
@@ -239,82 +239,68 @@ void preOrden(struct viaje *nodo) {
         preOrden(nodo->der);
     }
 }
-/*int Registrarpas(){
-    
-    int buscarporid(id, raiz);
-    
-    int op;
-    cout << "Desea registrar pasajeros en este viaje: "<<endl;
-    cout << "1. Sí \n2. No "<<endl;
-    cout << "Digite su opcion: ";
-    cin>>op;
-    switch(op){
-    case 1:
-    
-    if(cab==NULL)
-    {
-    cab = ((struct pasajero *) malloc(sizeof(struct pasajero)));
-    cout << "Ingrese el nombre del pasajero: ";
-    cin >> cab->nombre; //nombre
-    cout << "Ingrese el apellido del pasajero: ";
-    cin >> cab->apellido; //apellido
-    cout << "Ingrese la  edad: ";
-    cin >> cab->edad; //edad
+/*
+int Registrarpas() {
+    cout << "Digite el ID de la embarcación para registrar un pasajero: ";
+    int id;
+    cin >> id;
 
-    
-
-        cab->sig = NULL;
-        free(aux);
-    }
-    else
-    {
-        aux1 = (struct pasajero *)malloc(sizeof(struct pasajero));
-
-
-    cout << "Ingrese el nombre del pasajero: ";
-    cin >> aux1->nombre; //nombre
-
-    cout << "Ingrese el apellido del pasajero: ";
-    cin >> aux1->apellido; //apellido
-
-    cout << "Ingrese la  edad: ";
-    cin >> aux1->edad; //edad
-
-        cout<<"\t Gracias por registrar un nuevo pasajero: "<<endl;
-    aux->capacidad=aux->capacidad - 1
-
-
-        aux1->sig = NULL;
+   
+    viaje* viajeEncontrado = buscarporid(id, raiz);
+    if (viajeEncontrado != NULL) {
+        // Mostrar los datos del viaje encontrado
         
-        aux2 = cab;
+
+        // Si el viaje existe, proceder a registrar el pasajero
+        if (cab == NULL) {
+            cab = (struct pasajero*)malloc(sizeof(struct pasajero));
+            cout << "Ingrese el nombre del pasajero: ";
+            cin >> cab->nombre;
+            cout << "Ingrese el apellido del pasajero: ";
+            cin >> cab->apellido;
+            cout << "Ingrese la edad: ";
+            cin >> cab->edad;
+            cab->sig = NULL;
+        } else {
+            aux1 = (struct pasajero*)malloc(sizeof(struct pasajero));
+            cout << "Ingrese el nombre del pasajero: ";
+            cin >> aux1->nombre;
+            cout << "Ingrese el apellido del pasajero: ";
+            cin >> aux1->apellido;
+            cout << "Ingrese la edad: ";
+            cin >> aux1->edad;
+            aux1->sig = NULL;
+            aux2 = cab;
+            while (aux2->sig != NULL) {
+                aux2 = aux2->sig;
+            }
+            aux2->sig = aux1;
+        }
+        cout << "Pasajero registrado con éxito." << endl;
+    } else {
         
-        aux2->sig = aux1;
-
-        aux1 = NULL;
-
-        aux2 = aux1;
-
-        free(aux);
-
-        free(aux2);
+        cout << "El viaje con ID " << id << " no existe." << endl;
     }
 
-    return 0;
-    
-    /*case 2:
-    int main();
-    }
     return 0;
 }
+
     
 */
 
-
-
+void inOrden(struct viaje* nodo) {
+    if (nodo != NULL) {
+        inOrden(nodo->izq);
+        cout << "ID: " << nodo->id << ", Matrícula: " << nodo->matricula << ", Nombre: " << nodo->nm 
+             << ", Destino: " << nodo->destino << ", Fecha: " << nodo->ano << "/" << nodo->mes << "/" << nodo->dia 
+             << ", Precio: " << nodo->precio << endl;
+        inOrden(nodo->der);
+    }
+}
 int main() {
     raiz = NULL;
     int opc = 0;
-    do {//esto aun no lo muevas porque se putea esto, haz las funciones
+    do {
         cout << "-------------------------------" << endl;
         cout << "\tMenu de opciones" << endl;
         cout << "-------------------------------" << endl;
@@ -336,7 +322,7 @@ int main() {
                 raiz = insertar(raiz);
                 break;
             case 2:
-                preOrden(raiz);
+                inOrden(raiz);
                 break;
             case 3:
                 cout << "Digite su ID: ";
