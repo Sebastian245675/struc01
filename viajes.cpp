@@ -5,7 +5,7 @@ using namespace std;
 struct viaje {
     //precio
     double precio;
-
+int contador;
      //destino
     char destino [20];
 
@@ -70,7 +70,8 @@ int crearviaje() {
     
     cout << "Ingrese la capacidad: ";
     cin>>aux->capacidad;
-     
+       aux->contador=0;
+   
     
     cout << " "<< endl;
     cout << "Ingrese el precio: $";
@@ -115,31 +116,27 @@ int generaridentificador(viaje* aux) {
 algo asi bro
 */
 
-int buscarporid(int id, viaje*aux){
-    
-if (aux==NULL){
-     cout << "La embarcacion no existe";
-     return -1;
-}else if (aux->id==id){
-      cout << "\tDATOS"<<endl;
-        /*cout <<"ID: " <<nodo->id<<endl;*/
-        cout<<"matricula: "<< aux->matricula<<endl;
-        cout<<"Nombre: "<< aux->nm<<endl;
-        cout<<"Destino: "<< aux->destino<<endl;
-        cout<<"Año: "<< aux->ano<<endl;
-        cout<<"Mes: "<< aux->mes<<endl;
-        cout<<"Dia: "<< aux->dia<<endl;
-        cout<<"Precio: $"<< aux->precio<<endl;
-        cout<<"Capacidad: "<< aux->capacidad<<endl;
-        cout<<" "<<endl;
-      
-}else if (id < aux->id) {
+viaje* buscarporid(int id, viaje* aux) {
+    if (aux == NULL) {
+        cout << "La embarcacion no existe" << endl;
+        return NULL;
+    } else if (aux->id == id) {
+        cout << "\tDATOS" << endl;
+        cout << "matricula: " << aux->matricula << endl;
+        cout << "Nombre: " << aux->nm << endl;
+        cout << "Destino: " << aux->destino << endl;
+        cout << "Año: " << aux->ano << endl;
+        cout << "Mes: " << aux->mes << endl;
+        cout << "Dia: " << aux->dia << endl;
+        cout << "Precio: $" << aux->precio << endl;
+        cout << "Capacidad: " << aux->capacidad << endl;
+        cout << " " << endl;
+        return aux;
+    } else if (id < aux->id) {
         return buscarporid(id, aux->izq);
-    } else  {
+    } else {
         return buscarporid(id, aux->der);
     }
-
-
 }
 int obtenerAltura(struct viaje *n) {
     if (n == NULL) {
@@ -239,54 +236,54 @@ void preOrden(struct viaje *nodo) {
         preOrden(nodo->der);
     }
 }
-/*
+
 int Registrarpas() {
     cout << "Digite el ID de la embarcación para registrar un pasajero: ";
     int id;
     cin >> id;
 
-   
     viaje* viajeEncontrado = buscarporid(id, raiz);
     if (viajeEncontrado != NULL) {
-        // Mostrar los datos del viaje encontrado
         
-
-        // Si el viaje existe, proceder a registrar el pasajero
-        if (cab == NULL) {
-            cab = (struct pasajero*)malloc(sizeof(struct pasajero));
-            cout << "Ingrese el nombre del pasajero: ";
-            cin >> cab->nombre;
-            cout << "Ingrese el apellido del pasajero: ";
-            cin >> cab->apellido;
-            cout << "Ingrese la edad: ";
-            cin >> cab->edad;
-            cab->sig = NULL;
+        if(viajeEncontrado->contador < viajeEncontrado->capacidad){
+        
+            if (cab == NULL) {
+                cab = (struct pasajero*)malloc(sizeof(struct pasajero));
+                cout << "Ingrese el nombre del pasajero: ";
+                cin >> cab->nombre;
+                cout << "Ingrese el apellido del pasajero: ";
+                cin >> cab->apellido;
+                cout << "Ingrese la edad: ";
+                cin >> cab->edad;
+                cab->sig = NULL;
+            } else {
+                aux1 = (struct pasajero*)malloc(sizeof(struct pasajero));
+                cout << "Ingrese el nombre del pasajero: ";
+                cin >> aux1->nombre;
+                cout << "Ingrese el apellido del pasajero: ";
+                cin >> aux1->apellido;
+                cout << "Ingrese la edad: ";
+                cin >> aux1->edad;
+                aux1->sig = NULL;
+                aux2 = cab;
+                while (aux2->sig != NULL) {
+                    aux2 = aux2->sig;
+                }
+                aux2->sig = aux1;
+            } 
+            viajeEncontrado->contador++;
+            cout << "Pasajero registrado con éxito. Numero actual de pasajeros: " << viajeEncontrado->contador << endl;
         } else {
-            aux1 = (struct pasajero*)malloc(sizeof(struct pasajero));
-            cout << "Ingrese el nombre del pasajero: ";
-            cin >> aux1->nombre;
-            cout << "Ingrese el apellido del pasajero: ";
-            cin >> aux1->apellido;
-            cout << "Ingrese la edad: ";
-            cin >> aux1->edad;
-            aux1->sig = NULL;
-            aux2 = cab;
-            while (aux2->sig != NULL) {
-                aux2 = aux2->sig;
-            }
-            aux2->sig = aux1;
+            cout << "La embarcación ha alcanzado el máximo de pasajeros." << endl;
         }
-        cout << "Pasajero registrado con éxito." << endl;
     } else {
-        
         cout << "El viaje con ID " << id << " no existe." << endl;
     }
 
     return 0;
 }
-
     
-*/
+
 
 void inOrden(struct viaje* nodo) {
     if (nodo != NULL) {
@@ -297,6 +294,95 @@ void inOrden(struct viaje* nodo) {
         inOrden(nodo->der);
     }
 }
+struct viaje* minnimovalor(struct viaje* nodo) {
+    struct viaje* aux= nodo;
+
+    while (aux->izq != NULL) {
+        aux = aux->izq;
+    }
+
+    return aux;
+}
+viaje* eliminarNodo(viaje* raiz, int id) {
+    if (raiz == NULL) {
+        return raiz;
+    }
+    if (id < raiz->id) {
+        raiz->izq = eliminarNodo(raiz->izq, id);
+    }
+   
+    else if (id > raiz->id) {
+        raiz->der = eliminarNodo(raiz->der, id);
+    }
+   
+    else {
+       
+        if (raiz->izq == NULL) {
+            viaje* aux= raiz->der;
+            free(raiz);
+            return aux;
+        } else if (raiz->der == NULL) {
+            viaje* aux= raiz->izq;
+            free(raiz);
+            return aux;
+        }
+
+        viaje* aux = minnimovalor(raiz->der);
+
+       
+        raiz->id = aux->id;
+
+      
+        raiz->der = eliminarNodo(raiz->der, aux->id);
+    }
+
+
+    raiz->altura = 1 + mayor(obtenerAltura(raiz->izq), obtenerAltura(raiz->der));
+
+    int balance = obtenerBalance(raiz);
+
+    if (balance > 1 && obtenerBalance(raiz->izq) >= 0) {
+        return rotarDerecha(raiz);
+    }
+    if (balance > 1 && obtenerBalance(raiz->izq) < 0) {
+        raiz->izq = rotarIzquierda(raiz->izq);
+        return rotarDerecha(raiz);
+    }
+    if (balance < -1 && obtenerBalance(raiz->der) <= 0) {
+        return rotarIzquierda(raiz);
+    }
+    if (balance < -1 && obtenerBalance(raiz->der) > 0) {
+        raiz->der = rotarDerecha(raiz->der);
+        return rotarIzquierda(raiz);
+    }
+
+    return raiz;
+}
+
+viaje* eliminar(viaje* raiz) {
+    int id;
+    cout << "Ingrese el ID de la embarcacion que desea eliminar: ";
+    cin >> id;
+
+    
+    if (raiz == NULL) {
+        cout << "El árbol está vacío." << endl;
+        return raiz;
+    }
+
+    if (!buscarporid(id, raiz)) {
+        cout << "El ID a eliminar no pertenece a ninguna embarcacion." << endl;
+        return raiz;
+    }
+
+    raiz = eliminarNodo(raiz, id);
+    cout << "Embarcacion eliminada correctamente" << endl;
+
+    return raiz;
+}
+
+
+
 int main() {
     raiz = NULL;
     int opc = 0;
@@ -321,20 +407,22 @@ int main() {
                 crearviaje();
                 raiz = insertar(raiz);
                 break;
-            case 2:
+
+
+            case 3 :
                 inOrden(raiz);
                 break;
-            case 3:
+            case 2:
                 cout << "Digite su ID: ";
                 int id;
                 cin>> id;
                 buscarporid(id, raiz);
                 break;
-            case 4:
+            case 4:eliminar(raiz);
                 break;
-            //case 5:
-                //Registrarpas();
-                //break;
+            case 5:
+                Registrarpas();
+                break;
             
             case 6:
             default :
