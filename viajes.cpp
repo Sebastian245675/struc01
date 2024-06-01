@@ -38,6 +38,7 @@ struct pasajero{
     char nombre[10];
     char apellido[10];
     int edad;
+    int idso;
     pasajero *sig;
 };
 
@@ -102,7 +103,7 @@ int generaridentificador(viaje* aux) {
 
     aux->id = dato_uno, dato_dos,  aux->ano + aux->mes + aux->dia; 
     return aux->id;
-    
+    o
     podemos cambiar el tipo de dato de la matricula a char y luego solo usar un for bro.
     ponemos char matricula en el struct; 
     luego un for (int i=0; i < 2; i++){
@@ -249,21 +250,26 @@ int Registrarpas() {
         
             if (cab == NULL) {
                 cab = (struct pasajero*)malloc(sizeof(struct pasajero));
+               
                 cout << "Ingrese el nombre del pasajero: ";
                 cin >> cab->nombre;
                 cout << "Ingrese el apellido del pasajero: ";
                 cin >> cab->apellido;
                 cout << "Ingrese la edad: ";
                 cin >> cab->edad;
+                cab->idso=id;
+                
                 cab->sig = NULL;
             } else {
                 aux1 = (struct pasajero*)malloc(sizeof(struct pasajero));
+                
                 cout << "Ingrese el nombre del pasajero: ";
                 cin >> aux1->nombre;
                 cout << "Ingrese el apellido del pasajero: ";
                 cin >> aux1->apellido;
                 cout << "Ingrese la edad: ";
                 cin >> aux1->edad;
+                aux1->idso=id;
                 aux1->sig = NULL;
                 aux2 = cab;
                 while (aux2->sig != NULL) {
@@ -381,6 +387,23 @@ viaje* eliminar(viaje* raiz) {
     return raiz;
 }
 
+int listpas(int id){
+    
+    for (aux1 = cab; aux1 != NULL; aux1 = aux1->sig){
+        
+    if(aux1->idso == id){
+        cout<< "Nombre: " << aux1->nombre<< ", Apellido: " << aux1->apellido << ", Edad: " << aux1->edad << endl;
+    }
+    }
+if (cab==NULL){
+        cout<<"No hay pasajeros en la embarcacion"<<endl;
+    }
+    return 0;
+}
+
+
+
+
 
 
 int main() {
@@ -406,18 +429,21 @@ int main() {
             case 1:
                 crearviaje();
                 raiz = insertar(raiz);
+                break;  
+            
+            case 2:
+               inOrden(raiz);
                 break;
 
 
             case 3 :
-                inOrden(raiz);
-                break;
-            case 2:
-                cout << "Digite su ID: ";
+             cout << "Digite su ID: ";
                 int id;
                 cin>> id;
                 buscarporid(id, raiz);
+                
                 break;
+          
             case 4:eliminar(raiz);
                 break;
             case 5:
@@ -425,10 +451,17 @@ int main() {
                 break;
             
             case 6:
+                cout << "Digite el ID de la embarcacion: ";
+                int idse;
+                cin>> idse;
+                listpas(idse);
+                break;
             default :
                 cout<<"La opcion digitada no pertenece a ninguna funcion en nuestro software."<<endl;
+                break;
             case 7:
-                cout<<"Hasta luego...";
+                cout<<"Hasta luego..."<<endl;
+                break;
         }
     } while (opc != 7);
     return 0;
