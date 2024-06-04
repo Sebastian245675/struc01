@@ -1,3 +1,5 @@
+//Juan Sesbatian Zalasar  
+//Daniel Steve Montaño
 #include <iostream>
 #include <malloc.h>
 #include <string>
