@@ -1,5 +1,15 @@
-//Juan Sesbatian Zalasar  
-//Daniel Steve Montaño
+
+
+/*
+    /COLABORADORES
+Juan Sesbatian Zalasar  
+Daniel Steve Montaño
+*/
+/*
+    /SUSTENTACIÓN
+https://www.youtube.com/watch?v=uG0v1sRhoxo
+*/
+
 #include <iostream>
 #include <malloc.h>
 #include <string>
